@@ -29,13 +29,17 @@ jobs:
         run: just --dotenv-filename .just-env infra/save-plan
 
       - name: summary in table format
-        run: terraform show -json infra/plan.tfplan | tf-summarize
+        run: terraform show -json plan.tfplan | tf-summarize
+        working-directory: ./infra
 
       - name: summary in tree format
-        run: terraform show -json infra/plan.tfplan | tf-summarize -tree
+        run: terraform show -json plan.tfplan | tf-summarize -tree
+        working-directory: ./infra
 
       - name: summary in separate tree format
-        run: terraform show -json infra/plan.tfplan | tf-summarize -separate-tree
+        run: terraform show -json plan.tfplan | tf-summarize -separate-tree
+        working-directory: ./infra
 
       - name: summary in draw visual tree format
-        run: terraform show -json infra/plan.tfplan | tf-summarize -tree -draw
+        run: terraform show -json plan.tfplan | tf-summarize -tree -draw
+        working-directory: ./infra
