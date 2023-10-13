@@ -44,9 +44,9 @@ provider "github" {
 }
 
 resource "github_repository" "repository" {
-  name       = var.github_name
+  name        = var.github_name
   description = var.github_description
-  visibility = var.github_visibility
+  visibility  = var.github_visibility
 
   has_issues           = true
   has_projects         = false
@@ -54,10 +54,10 @@ resource "github_repository" "repository" {
   has_downloads        = false
   vulnerability_alerts = true
 
-  allow_merge_commit = false
-  allow_squash_merge = true
-  allow_rebase_merge = false
-  allow_auto_merge = true
+  allow_merge_commit     = false
+  allow_squash_merge     = true
+  allow_rebase_merge     = false
+  allow_auto_merge       = true
   delete_branch_on_merge = true
 }
 
