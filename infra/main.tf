@@ -13,6 +13,11 @@ variable "github_name" {
   description = "The name of the Github repository"
 }
 
+variable "github_description" {
+  type        = string
+  description = "The description of the Github repository"
+}
+
 variable "github_visibility" {
   type        = string
   default     = "private"
@@ -40,6 +45,7 @@ provider "github" {
 
 resource "github_repository" "repository" {
   name       = var.github_name
+  description = var.github_description
   visibility = var.github_visibility
 
   has_issues           = true
@@ -47,6 +53,12 @@ resource "github_repository" "repository" {
   has_wiki             = false
   has_downloads        = false
   vulnerability_alerts = true
+
+  allow_merge_commit = false
+  allow_squash_merge = true
+  allow_rebase_merge = false
+  allow_auto_merge = true
+  delete_branch_on_merge = true
 }
 
 resource "github_actions_secret" "op_service_account" {
