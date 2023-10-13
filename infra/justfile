@@ -3,6 +3,9 @@ set dotenv-load
 default:
   just --list
 
+init-terraform:
+    terraform init
+
 inject-tfvars:
     op inject -f -i ./terraform.tfvars.tpl -o terraform.tfvars
 
@@ -12,10 +15,10 @@ load-tfstate:
 store-tfstate:
     op document edit --vault $OP_VAULT terraform_tfstate ./terraform.tfstate
 
-plan: inject-tfvars load-tfstate
+plan: init-terraform inject-tfvars load-tfstate
     terraform plan -var-file=terraform.tfvars
 
-apply: inject-tfvars load-tfstate && store-tfstate
+apply: init-terraform inject-tfvars load-tfstate && store-tfstate
     terraform apply -var-file=terraform.tfvars
 
 # Setup a new Cochrane repository (args are the owner and name of the repository to be created on Github)
