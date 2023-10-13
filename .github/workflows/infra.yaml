@@ -20,4 +20,6 @@ jobs:
           terraform_version: 0.13.5
 
       - name: Run Terraform Plan
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT }}
         run: just --dotenv-filename .just-env infra/plan
