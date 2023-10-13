@@ -18,7 +18,7 @@ store-tfstate:
 plan: init-terraform inject-tfvars load-tfstate
     terraform plan -var-file=terraform.tfvars
 
-save-plan filename="plan.tfplan": init-terraform inject-tfvars load-tfstate
+save-plan filename="tfplan": init-terraform inject-tfvars load-tfstate
     terraform plan -var-file=terraform.tfvars -out={{filename}}
 
 apply: init-terraform inject-tfvars load-tfstate && store-tfstate
