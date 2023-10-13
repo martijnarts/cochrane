@@ -11,15 +11,31 @@ jobs:
 
       - name: Install 1Password CLI
         uses: 1password/install-cli-action@v1
-      
+
       - uses: extractions/setup-just@v1
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.7
+          terraform_wrapper: false
+
+      - name: Install Terraform Summarize
+        uses: kishaningithub/setup-tf-summarize@v1
 
       - name: Run Terraform Plan
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT }}
-        run: just --dotenv-filename .just-env infra/plan
+        run: just --dotenv-filename .just-env infra/save-plan
+
+      - name: summary in table format
+        run: terraform show -json infra/plan.tfplan | tf-summarize
+
+      - name: summary in tree format
+        run: terraform show -json infra/plan.tfplan | tf-summarize -tree
+
+      - name: summary in separate tree format
+        run: terraform show -json infra/plan.tfplan | tf-summarize -separate-tree
+
+      - name: summary in draw visual tree format
+        run: terraform show -json infra/plan.tfplan | tf-summarize -tree -draw
