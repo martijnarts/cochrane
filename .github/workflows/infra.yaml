@@ -2,7 +2,6 @@ name: Apply infra changes
 
 permissions:
   issues: write
-  pull-requests: write
 
 on:
   pull_request:
