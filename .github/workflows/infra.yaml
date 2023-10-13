@@ -1,0 +1,21 @@
+name: Apply infra changes
+
+on:
+  pull_request:
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+      
+      - uses: extractions/setup-just@v1
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.13.5
+
+      - name: Run Terraform Plan
+        run: just --dotenv-filename .just-env infra/plan
