@@ -1,5 +1,8 @@
 name: Apply infra changes
 
+permissions:
+  issues: write
+
 on:
   pull_request:
 
@@ -7,15 +10,47 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Install 1Password CLI
         uses: 1password/install-cli-action@v1
-      
+
       - uses: extractions/setup-just@v1
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 0.13.5
+          terraform_version: 1.5.7
+          terraform_wrapper: false
+
+      - name: Install Terraform Summarize
+        uses: kishaningithub/setup-tf-summarize@v1
 
       - name: Run Terraform Plan
-        run: just --dotenv-filename .just-env infra/plan
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT }}
+        run: just --dotenv-filename .just-env infra/save-plan
+
+      - name: summary in table format
+        working-directory: ./infra
+        run: |
+          rm -rf tf-summarize-table-output.md
+          echo "## tf-summarize output:" > tf-summarize-table-output.md
+          echo "" >> tf-summarize-table-output.md
+          terraform show -json tfplan | tf-summarize -md >> tf-summarize-table-output.md
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: tf-summarize output
+
+      - name: Create comment with terraform plan summary
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-file: "./infra/tf-summarize-table-output.md"
+          edit-mode: replace

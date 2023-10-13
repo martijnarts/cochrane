@@ -1,5 +1,6 @@
 github_owner = "martijnarts"
 github_name = "cochrane"
+github_description = "A template and example repository for a full stack batteries-included Rust web application"
 github_token = "op://cochrane/github/token"
 github_visibility = "public"
 gha_op_service_account = "op://cochrane/gha_op_service_account/token"

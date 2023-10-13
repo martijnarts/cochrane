@@ -1,7 +1,10 @@
-set dotenv-load
+set dotenv-load := true
 
 default:
-  just --list
+    just --list
+
+init-terraform:
+    terraform init
 
 inject-tfvars:
     op inject -f -i ./terraform.tfvars.tpl -o terraform.tfvars
@@ -12,10 +15,13 @@ load-tfstate:
 store-tfstate:
     op document edit --vault $OP_VAULT terraform_tfstate ./terraform.tfstate
 
-plan: inject-tfvars load-tfstate
+plan: init-terraform inject-tfvars load-tfstate
     terraform plan -var-file=terraform.tfvars
 
-apply: inject-tfvars load-tfstate && store-tfstate
+save-plan filename="tfplan": init-terraform inject-tfvars load-tfstate
+    terraform plan -var-file=terraform.tfvars -out={{filename}}
+
+apply: init-terraform inject-tfvars load-tfstate && store-tfstate
     terraform apply -var-file=terraform.tfvars
 
 # Setup a new Cochrane repository (args are the owner and name of the repository to be created on Github)
@@ -24,40 +30,40 @@ setup repo-owner repo-name:
     set -euo pipefail
 
     # Setup .env
-    echo "OP_VAULT={{repo-name}}" > ../.env
+    echo "OP_VAULT={{ repo-name }}" > ../.env
 
     # Create 1Password Vault
-    op vault create {{repo-name}}
+    op vault create {{ repo-name }}
 
     echo "Now open https://my.1password.com/developer-tools/infrastructure-secrets/serviceaccount/?type=github-actions and create a new Service Account for the vault"
     printf "Service Account: "
     read -r -s serviceaccount
     echo
-    op item create --category 'Secure Note' --vault {{repo-name}} --title gha_op_service_account "token=$serviceaccount"
+    op item create --category 'Secure Note' --vault {{ repo-name }} --title gha_op_service_account "token=$serviceaccount"
 
     # Create repository
-    gh repo create --private {{repo-owner}}/{{repo-name}}
+    gh repo create --private {{ repo-owner }}/{{ repo-name }}
 
-    echo "Created repository {{repo-owner}}/{{repo-name}}"
+    echo "Created repository {{ repo-owner }}/{{ repo-name }}"
     echo "Now open https://github.com/settings/personal-access-tokens/new and create a personal access token for it"
     printf "Personal Access Token: "
     read -r -s password
     echo
-    op item create --category 'Secure Note' --vault {{repo-name}} --title github "token=$password"
+    op item create --category 'Secure Note' --vault {{ repo-name }} --title github "token=$password"
 
     # Create Terraform variables template
-    echo "github_owner = \"{{repo-owner}}\"" > terraform.tfvars.tpl
-    echo "github_name = \"{{repo-name}}\"" >> terraform.tfvars.tpl
-    echo "github_token = \"op://{{repo-name}}/github/token\"" >> terraform.tfvars.tpl
+    echo "github_owner = \"{{ repo-owner }}\"" > terraform.tfvars.tpl
+    echo "github_name = \"{{ repo-name }}\"" >> terraform.tfvars.tpl
+    echo "github_token = \"op://{{ repo-name }}/github/token\"" >> terraform.tfvars.tpl
 
     # Set Git remote to new repository
     git remote rename origin old-origin || true
-    git remote add origin $(gh repo view {{repo-owner}}/{{repo-name}} --json sshUrl --jq .sshUrl)
+    git remote add origin $(gh repo view {{ repo-owner }}/{{ repo-name }} --json sshUrl --jq .sshUrl)
 
     # Initialise Terraform
     op inject -i ./terraform.tfvars.tpl -o terraform.tfvars
     terraform init
-    terraform import github_repository.repository {{repo-name}}
-    op document create ./terraform.tfstate --vault {{repo-name}} --title "terraform_tfstate"
+    terraform import github_repository.repository {{ repo-name }}
+    op document create ./terraform.tfstate --vault {{ repo-name }} --title "terraform_tfstate"
 
     echo "You may have a git remote called 'old-origin' that you can delete with 'git remote remove old-origin'"
