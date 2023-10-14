@@ -1,0 +1,23 @@
+[application]
+name = "cochrane"
+default_platform = "web"
+out_dir = "dist"
+asset_dir = "public"
+
+[web.app]
+title = "project_name"
+
+[web.watcher]
+reload_html = true
+watch_path = ["src", "public"]
+
+[web.resource]
+style = []
+script = []
+
+[web.resource.dev]
+style = []
+script = []
+
+[[web.proxy]]
+backend = "http://localhost:8000/api/"
