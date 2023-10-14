@@ -5,6 +5,9 @@ permissions:
 
 on:
   pull_request:
+    paths:
+      - "infra/**"
+      - ".github/workflows/infra.yaml"
 
 jobs:
   plan:
