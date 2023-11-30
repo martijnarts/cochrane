@@ -12,7 +12,7 @@ on:
       - 'backend/Dockerfile'
 
 jobs:
-  plan:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Get Fly token
@@ -37,11 +37,31 @@ jobs:
         with:
           push: true
           file: frontend/Dockerfile
-          tags: registry.fly.io/cochrane/cochrane-frontend:latest
+          tags: registry.fly.io/cochrane-frontend:latest
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Fly token
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT }}
+          FLY_ACCESS_TOKEN: op://cochrane/fly/token
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Authenticate Fly registry
+        run: flyctl auth docker
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: true
           file: backend/Dockerfile
-          tags: registry.fly.io/cochrane/cochrane-backend:latest
+          tags: registry.fly.io/cochrane-backend:latest

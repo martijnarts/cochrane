@@ -53,7 +53,9 @@ provider "github" {
   owner = var.github_owner
 }
 
-provider "fly" {}
+provider "fly" {
+  fly_api_token = var.fly_token
+}
 
 resource "github_repository" "repository" {
   name        = var.github_name
@@ -78,4 +80,12 @@ resource "github_actions_secret" "op_service_account" {
 
   secret_name     = "OP_SERVICE_ACCOUNT"
   plaintext_value = var.gha_op_service_account
+}
+
+resource "fly_app" "app" {
+  name = "${var.github_name}-backend"
+}
+
+resource "fly_app" "app-frontend" {
+  name = "${var.github_name}-frontend"
 }
