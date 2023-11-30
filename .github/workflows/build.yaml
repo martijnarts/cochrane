@@ -13,6 +13,7 @@ on:
 
 jobs:
   build-frontend:
+    name: Build and push frontend Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Get Fly token
@@ -40,6 +41,7 @@ jobs:
           tags: registry.fly.io/cochrane-frontend:latest
 
   build-backend:
+    name: Build and push backend Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Get Fly token

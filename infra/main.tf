@@ -82,10 +82,10 @@ resource "github_actions_secret" "op_service_account" {
   plaintext_value = var.gha_op_service_account
 }
 
-resource "fly_app" "app" {
+resource "fly_app" "app_backend" {
   name = "${var.github_name}-backend"
 }
 
-resource "fly_app" "app-frontend" {
+resource "fly_app" "app_frontend" {
   name = "${var.github_name}-frontend"
 }
