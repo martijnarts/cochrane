@@ -1,8 +1,20 @@
-#![allow(non_snake_case, unused)]
-use dioxus::prelude::*;
-use dioxus_fullstack::prelude::*;
+use dioxus::prelude::{dioxus_elements, rsx, use_state, Element, Scope};
+use dioxus_fullstack::prelude::LaunchBuilder;
+use tracing_subscriber;
 
+#[cfg(ssr)]
 fn main() {
+    tracing_subscriber::fmt::init();
+
+    LaunchBuilder::new(app)
+        .addr([[0, 0, 0, 0], 8080].into())
+        .launch();
+}
+
+#[cfg(not(ssr))]
+fn main() {
+    tracing_subscriber::fmt::init();
+
     LaunchBuilder::new(app).launch();
 }
 

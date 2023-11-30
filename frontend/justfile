@@ -3,3 +3,9 @@ build:
 
 run: build
     dx serve --features ssr --hot-reload --platform desktop
+
+docker-build:
+    cd .. && docker build . -f frontend/Dockerfile -t cochrane-frontend:dev
+
+docker-run: docker-build
+    docker run -it -p 8080:80 cochrane-frontend:dev

@@ -29,11 +29,21 @@ variable "gha_op_service_account" {
   description = "A 1Password service account token with access to the right vault"
 }
 
+variable "fly_token" {
+  type        = string
+  description = "A Fly.io API token with access to the right organization"
+}
+
 terraform {
   required_providers {
     github = {
       source  = "integrations/github"
       version = "~> 5.0"
+    }
+
+    fly = {
+      source = "pi3ch/fly"
+      version = "0.0.24"
     }
   }
 }
@@ -42,6 +52,8 @@ provider "github" {
   token = var.github_token
   owner = var.github_owner
 }
+
+provider "fly" {}
 
 resource "github_repository" "repository" {
   name        = var.github_name

@@ -1,0 +1,11 @@
+build:
+    cargo build
+
+run:
+    cargo run
+
+docker-build:
+    cd .. && docker build . -f backend/Dockerfile -t cochrane-backend:dev
+
+docker-run: docker-build
+    docker run -it -p 8081:3000 cochrane-backend:dev

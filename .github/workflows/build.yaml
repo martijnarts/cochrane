@@ -1,0 +1,47 @@
+name: Build and deploy
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'frontend/**.rs'
+      - 'frontend/Cargo.toml'
+      - 'frontend/Dockerfile'
+      - 'backend/**.rs'
+      - 'backend/Cargo.toml'
+      - 'backend/Dockerfile'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Fly token
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT }}
+          FLY_ACCESS_TOKEN: op://cochrane/fly/token
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Authenticate Fly registry
+        run: flyctl auth docker
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          file: frontend/Dockerfile
+          tags: registry.fly.io/cochrane/cochrane-frontend:latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          file: backend/Dockerfile
+          tags: registry.fly.io/cochrane/cochrane-backend:latest
