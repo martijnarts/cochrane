@@ -86,6 +86,33 @@ resource "fly_app" "app_backend" {
   name = "${var.github_name}-backend"
 }
 
+resource "fly_machine" "machine_backend" {
+  app = fly_app.app_backend.name
+  image = "registry.fly.io/${var.github_name}-backend:latest"
+  region = "iad"
+  services = [
+    {
+      ports = [
+        {
+          port = 443
+          handlers = ["tls", "http"]
+        },
+        {
+          port = 80
+          handlers = ["http"]
+        }
+      ]
+      internal_port = 3000
+      protocol = "tcp"
+    }
+  ]
+}
+
+resource "fly_ip" "ip_backend" {
+  app = fly_app.app_backend.name
+  type = "v4"
+}
+
 resource "fly_app" "app_frontend" {
   name = "${var.github_name}-frontend"
 }
