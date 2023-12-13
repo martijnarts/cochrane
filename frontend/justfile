@@ -1,11 +1,11 @@
 build:
     dx build --features web
 
-run: build
+run $DIOXUS_ENV='{ "backend_url": "http://localhost:3000" }': build
     dx serve --features ssr --hot-reload --platform desktop
 
 docker-build:
     cd .. && docker build . -f frontend/Dockerfile -t cochrane-frontend:dev
 
 docker-run: docker-build
-    docker run -it -p 8080:8080 cochrane-frontend:dev
+    docker run -it --network host -e DIOXUS_ENV='{ "backend_url": "http://localhost:3000" }' cochrane-frontend:dev
