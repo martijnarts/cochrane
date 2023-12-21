@@ -4,3 +4,4 @@ github_description = "A template and example repository for a full stack batteri
 github_token = "op://cochrane/github/token"
 github_visibility = "public"
 gha_op_service_account = "op://cochrane/gha_op_service_account/token"
+fly_token = "op://cochrane/fly/token"
