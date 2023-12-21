@@ -90,6 +90,7 @@ resource "fly_machine" "machine_backend" {
   app = fly_app.app_backend.name
   image = "registry.fly.io/${var.github_name}-backend:latest"
   region = "iad"
+  name = "backend"
   services = [
     {
       ports = [
@@ -121,6 +122,7 @@ resource "fly_machine" "machine_frontend" {
   app = fly_app.app_frontend.name
   image = "registry.fly.io/${var.github_name}-frontend:latest"
   region = "iad"
+  name = "frontend"
   services = [
     {
       ports = [
@@ -137,6 +139,9 @@ resource "fly_machine" "machine_frontend" {
       protocol = "tcp"
     }
   ]
+  env = {
+    DIOXUS_ENV = jsonencode({"backend_url": "https://${fly_ip.ip_backend.address}}"})
+  }
 }
 
 resource "fly_ip" "ip_frontend" {

@@ -83,7 +83,7 @@ fn get_dioxus_env(cx: &Scope) -> Option<Result<DioxusEnv, String>> {
         #[cfg(not(feature = "ssr"))]
         {
             use dioxus::events::use_eval;
-            use dioxus::hooks::{to_owned, use_future};
+            use dioxus::hooks::to_owned;
 
             let create_eval = use_eval(cx);
             let eval = create_eval(r#"dioxus.send(env);"#).unwrap();
