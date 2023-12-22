@@ -1,5 +1,6 @@
 use dioxus::prelude::fc_to_builder;
 use dioxus::{
+    core::IntoDynNode,
     core_macro::Props,
     hooks::use_future,
     prelude::{dioxus_elements, rsx, use_state, Element, Scope},

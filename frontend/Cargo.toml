@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-dioxus = "0.4.0"
-dioxus-fullstack = "0.4.1"
+dioxus = "0.4.3"
+dioxus-fullstack = "0.4.3"
+dioxus-core-macro = "0.4.3"
 reqwest = "0.11.22"
 serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
