@@ -34,6 +34,11 @@ variable "fly_token" {
   description = "A Fly.io API token with access to the right organization"
 }
 
+variable "neon_key" {
+  type        = string
+  description = "A Neon.tech API key"
+}
+
 terraform {
   required_providers {
     github = {
@@ -45,6 +50,10 @@ terraform {
       source = "pi3ch/fly"
       version = "0.0.24"
     }
+
+    neon = {
+      source = "kislerdm/neon"
+    }
   }
 }
 
@@ -55,6 +64,10 @@ provider "github" {
 
 provider "fly" {
   fly_api_token = var.fly_token
+}
+
+provider "neon" {
+  api_key = var.neon_key
 }
 
 resource "github_repository" "repository" {
@@ -90,7 +103,6 @@ resource "fly_machine" "machine_backend" {
   app = fly_app.app_backend.name
   image = "registry.fly.io/${var.github_name}-backend:latest"
   region = "iad"
-  name = "backend"
   services = [
     {
       ports = [
@@ -107,6 +119,9 @@ resource "fly_machine" "machine_backend" {
       protocol = "tcp"
     }
   ]
+  env = {
+    DATABASE_URL = neon_project.db_project.connection_uri
+  }
 }
 
 resource "fly_ip" "ip_backend" {
@@ -122,7 +137,6 @@ resource "fly_machine" "machine_frontend" {
   app = fly_app.app_frontend.name
   image = "registry.fly.io/${var.github_name}-frontend:latest"
   region = "iad"
-  name = "frontend"
   services = [
     {
       ports = [
@@ -140,11 +154,20 @@ resource "fly_machine" "machine_frontend" {
     }
   ]
   env = {
-    DIOXUS_ENV = jsonencode({"backend_url": "https://${fly_ip.ip_backend.address}}"})
+    DIOXUS_ENV = jsonencode({"backend_url": "https://${fly_ip.ip_backend.address}"})
   }
 }
 
 resource "fly_ip" "ip_frontend" {
   app = fly_app.app_frontend.name
   type = "v4"
+}
+
+resource "neon_project" "db_project" {
+  name = var.github_name
+  branch {
+    name = "main"
+    database_name = "core"
+    role_name = "backend"
+  }
 }

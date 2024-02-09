@@ -12,4 +12,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/git \
 
 FROM debian:bookworm-slim
 COPY --from=builder /usr/src/cochrane/cochrane-backend /usr/local/bin/cochrane-backend
+
+EXPOSE 3000
+
 CMD ["cochrane-backend"]

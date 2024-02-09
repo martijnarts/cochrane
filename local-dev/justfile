@@ -1,0 +1,23 @@
+set dotenv-load
+set dotenv-filename := ".just-env"
+
+start:
+  docker-compose -f compose.yaml up
+
+start-service service:
+  docker-compose -f compose.yaml up -d {{service}}
+
+stop:
+  docker-compose -f compose.yaml down
+
+stop-service service:
+  docker-compose -f compose.yaml down {{service}}
+
+sqlx-migrate: (start-service "postgres")
+  cd .. && cargo sqlx migrate run --database-url=postgres://postgres:example@localhost:8101/cochrane
+
+sqlx-prepare: (start-service "postgres") sqlx-migrate
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  cd ..
+  cargo sqlx prepare --database-url=postgres://postgres:example@localhost:8101/cochrane --workspace

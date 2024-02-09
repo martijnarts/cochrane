@@ -23,6 +23,28 @@ provider "registry.terraform.io/integrations/github" {
   ]
 }
 
+provider "registry.terraform.io/kislerdm/neon" {
+  version = "0.3.2"
+  hashes = [
+    "h1:CuCxjoD6wSbryxmaXFJHq4nqp22MHJrzOfhPaBWx8U0=",
+    "zh:0ca61d6894b425705b7defd68c77708cdcf391418752862bcebb201016c2ba8b",
+    "zh:1b067a934e344aefda59edd246e36840441ba9fa6ea3cd80ec55ffb458c88109",
+    "zh:4fc0ec50d20d4d31bdf77ad4ecc585115312523e24cbadf67fc0ea411f13c291",
+    "zh:52c23957941753ee604c02887fe558951024513458d4f18520fa2dbdacd57d8a",
+    "zh:58441e01a2b660d80e3b2c723702797d9946b580977f1fadd972e1576f30f69f",
+    "zh:64935c2e7674af24ddb11886ab75d982dc2bc83328b2e10b61e1385495ac181a",
+    "zh:829a531a53a77abcfb952e5dd9f97123dcbf0a19b3554ac338390da4a4185fb0",
+    "zh:ae43705a2a41de93dca1ff4f0c496ffc1a6dd8702bde73bda401c3328d914107",
+    "zh:bb787b35583d9ca74ec1e5da9911cff17899133a91488f6cdacf8f62875bb8bf",
+    "zh:be2fab96715ea3f2b1478d5977735f951040e6ed0f8083e98c9588fe4fb9cc86",
+    "zh:d7bc5d463ea854229c5fd6b9b9318ed9c622f6dfb3b07d9a25ff93419ffe8917",
+    "zh:e708ff19e16c111c8e72ad4ed53590e3ed1ec79905c9a22f599dac781870b0d7",
+    "zh:f349643029566a20b4c6d1b5c85f8e5a75bf5d8c3836ed8954941cb7a684747b",
+    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "zh:fcd4113d0daecf198a7d31d2ca2b99fa05b5ca8ea839c6c01fff8b19cce6a7d8",
+  ]
+}
+
 provider "registry.terraform.io/pi3ch/fly" {
   version     = "0.0.24"
   constraints = "0.0.24"

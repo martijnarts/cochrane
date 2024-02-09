@@ -1,3 +1,6 @@
+set dotenv-load
+set dotenv-filename := ".just-env"
+
 build:
     cargo build
 
